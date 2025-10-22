@@ -10,6 +10,7 @@ type Resource struct {
 	Modified    string            `json:"modified"`
 	Attrs       map[string]string `json:"attrs,omitempty"`
 	Permissions map[string]string `json:"permissions,omitempty"`
+	Section     map[string]string `json:"section,omitempty"`
 	Linkages    []Linkage         `json:"linkages,omitempty"`
 }
 
@@ -23,6 +24,7 @@ type Resource_json struct {
 	Modified    string      `json:"modified"`
 	Attrs       interface{} `json:"attrs,omitempty"`
 	Permissions interface{} `json:"permissions,omitempty"`
+	Section     interface{} `json:"section,omitempty"`
 	Linkages    []Linkage   `json:"linkages,omitempty"`
 }
 

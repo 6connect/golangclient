@@ -38,44 +38,7 @@ func (resources *ResourceMethods) GetResources(filters *map[string]string) ([]Re
 	}
 	resources_ret := make([]Resource, len(resources_ret_json))
 	for k, resource := range resources_ret_json {
-		resources_ret[k] = Resource{
-			ID:       resource.ID,
-			ParentID: resource.ParentID,
-			Name:     resource.Name,
-			Slug:     resource.Slug,
-			Modified: resource.Modified,
-			Date:     resource.Date,
-			Linkages: resource.Linkages,
-		}
-
-		switch dv := resource.Attrs.(type) {
-		case map[string]interface{}:
-			if len(dv) != 0 {
-				m := make(map[string]string)
-				for k, v := range dv {
-					switch val := v.(type) {
-					case string:
-						m[k] = string(val)
-					}
-				}
-				resources_ret[k].Attrs = m
-			}
-		}
-
-		switch dv := resource.Permissions.(type) {
-		case map[string]interface{}:
-			if len(dv) != 0 {
-				m := make(map[string]string)
-				for k, v := range dv {
-					switch val := v.(type) {
-					case string:
-						m[k] = string(val)
-					}
-				}
-				resources_ret[k].Permissions = m
-			}
-		}
-
+		resources_ret[k] = resourceJsonToResource(resource)
 	}
 
 	return resources_ret, nil
@@ -148,4 +111,77 @@ func (resources *ResourceMethods) DeleteResourceByID(resourceId string) error {
 
 	_, err := resources.Client.doRequest("DELETE", "/resources/"+resourceId, nil)
 	return err
+}
+
+func (resources *ResourceMethods) GetResourceByID(resourceId string) (*Resource, error) {
+	body, err := resources.Client.doRequest("GET", "/resources/"+resourceId, nil)
+	if err != nil {
+		return nil, err
+	}
+	resources_ret_json := Resource_json{}
+
+	err = json.Unmarshal(body, &resources_ret_json)
+	if err != nil {
+		return nil, err
+	}
+
+	resources_ret := resourceJsonToResource(resources_ret_json)
+
+	return &resources_ret, nil
+}
+
+func resourceJsonToResource(rj Resource_json) Resource {
+	resource := Resource{
+		ID:       rj.ID,
+		ParentID: rj.ParentID,
+		Name:     rj.Name,
+		Slug:     rj.Slug,
+		Modified: rj.Modified,
+		Date:     rj.Date,
+		Linkages: rj.Linkages,
+	}
+
+	switch dv := rj.Attrs.(type) {
+	case map[string]interface{}:
+		if len(dv) != 0 {
+			m := make(map[string]string)
+			for k, v := range dv {
+				switch val := v.(type) {
+				case string:
+					m[k] = string(val)
+				}
+			}
+			resource.Attrs = m
+		}
+	}
+
+	switch dv := rj.Permissions.(type) {
+	case map[string]interface{}:
+		if len(dv) != 0 {
+			m := make(map[string]string)
+			for k, v := range dv {
+				switch val := v.(type) {
+				case string:
+					m[k] = string(val)
+				}
+			}
+			resource.Permissions = m
+		}
+	}
+
+	switch dv := rj.Section.(type) {
+	case map[string]interface{}:
+		if len(dv) != 0 {
+			m := make(map[string]string)
+			for k, v := range dv {
+				switch val := v.(type) {
+				case string:
+					m[k] = string(val)
+				}
+			}
+			resource.Section = m
+		}
+	}
+
+	return resource
 }
