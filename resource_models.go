@@ -35,3 +35,19 @@ type Linkage struct {
 	Relation    string `json:"relation,omitempty"`
 	Data        string `json:"data,omitempty"`
 }
+
+type ResourceLink struct {
+	ID         PVID     `json:"id,omitempty"`
+	ResourceID PVID     `json:"resource_id,omitempty"`
+	Relation   string   `json:"relation,omitempty"`
+	Data       string   `json:"data,omitempty"`
+	Resource   Resource `json:"resource,omitempty"`
+}
+
+type ResourceLink_json struct {
+	ID         PVID          `json:"id,omitempty"`
+	ResourceID PVID          `json:"resource_id,omitempty"`
+	Relation   string        `json:"relation,omitempty"`
+	Data       string        `json:"data,omitempty"`
+	Resource   Resource_json `json:"resource,omitempty"`
+}
